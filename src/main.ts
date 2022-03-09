@@ -11,6 +11,9 @@ import Vant from 'vant';
 // 自动设置rem基准值
 import 'amfe-flexible';
 
+// 消除chrome滑动事件警告
+import 'default-passive-events';
+
 function bootStrap() {
   const app = createApp(App);
 

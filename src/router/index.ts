@@ -1,12 +1,29 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
+import {
+  createRouter,
+  createWebHashHistory,
+  createWebHistory,
+  RouteRecordRaw,
+} from 'vue-router';
 
 import Layout from '@/views/Layout/index.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
+    redirect: '/home',
+  },
+  {
+    path: '/home',
     name: 'home',
     component: Layout,
+    children: [
+      {
+        path: '',
+        // 此处的name不可重名
+        component: () =>
+          import(/* webpackChunkName: "home" */ '@/views/Home/index.vue'),
+      },
+    ],
   },
   {
     path: '/login',
@@ -16,15 +33,11 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/about',
     name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: Layout,
 
     children: [
       {
         path: '',
-        name: 'index',
         component: () => import('@/views/About/index.vue'),
       },
     ],
@@ -32,7 +45,7 @@ const routes: Array<RouteRecordRaw> = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHashHistory(process.env.BASE_URL),
   routes,
 });
 

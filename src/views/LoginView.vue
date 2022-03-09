@@ -2,6 +2,14 @@
   <div class="login-container">
     <van-nav-bar title="登录" left-text="返回" @click-left="onClickLeft" />
 
+    <div class="img-wrap">
+      <img
+        src="https://s.yezgea02.com/1604045825972/newbee-mall-vue3-app-logo.png"
+        alt=""
+        width="120"
+        height="120"
+      />
+    </div>
     <van-cell-group inset>
       <van-field
         v-model="loginForm.userName"
@@ -79,11 +87,22 @@
     });
   };
 
+  // 校验规则
+  const fromRules = {
+    phone: [{}],
+    code: [],
+  };
+
   // toRefs(loginForm);
 </script>
 
 <style lang="less" scoped>
   .login-btn-wrap {
     padding: 20px 16px;
+  }
+
+  .img-wrap > img {
+    margin: 60px 50%;
+    transform: translateX(-50%);
   }
 </style>
