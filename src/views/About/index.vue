@@ -1,5 +1,19 @@
-<template>About 默认页面</template>
+<template>
+  About 默认页面
 
-<script setup lang="ts"></script>
+  <div class="goLogin">
+    <van-button type="primary" @click="goToLogin"> 点击登录 </van-button>
+  </div>
+</template>
+
+<script setup lang="ts">
+  import { useRouter } from 'vue-router';
+
+  const router = useRouter();
+
+  const goToLogin = () => {
+    router.push('/login');
+  };
+</script>
 
 <style lang="less" scoped></style>
