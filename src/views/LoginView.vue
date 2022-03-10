@@ -6,11 +6,10 @@
       <img
         src="https://s.yezgea02.com/1604045825972/newbee-mall-vue3-app-logo.png"
         alt=""
-        width="120"
-        height="120"
       />
     </div>
-    <van-cell-group inset>
+    <!-- 手机号注册 -->
+    <van-cell-group v-if="false" inset>
       <van-field
         v-model="loginForm.userName"
         left-icon="user-o"
@@ -31,20 +30,61 @@
         </template>
       </van-field>
     </van-cell-group>
-    <div class="login-btn-wrap">
-      <van-button round type="primary" block @click="login">登录</van-button>
-    </div>
+
+    <!-- 账号密码登录 -->
+    <van-cell-group inset>
+      <van-form @submit="onSubmit">
+        <van-field
+          v-model="loginForm.userName"
+          name="userName"
+          label="用户名"
+          placeholder="请输入用户名"
+        ></van-field>
+        <van-field
+          v-model="loginForm.password"
+          type="password"
+          name="password"
+          label="密码"
+          right-icon="warning-o"
+          placeholder="请输入密码"
+        ></van-field>
+        <van-field
+          v-model="loginForm.verify"
+          center
+          clearable
+          label="验证码"
+          placeholder="请输入验证码"
+        >
+          <template #button>
+            <VueImageVerify ref="verifyRef" />
+          </template>
+        </van-field>
+        <div class="login-btn-wrap">
+          <van-button round type="primary" block native-type="submit"
+            >登录</van-button
+          >
+        </div>
+      </van-form>
+    </van-cell-group>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { reactive } from 'vue';
+  import { reactive, ref } from 'vue';
 
   import { Toast } from 'vant';
 
+  import md5 from 'js-md5';
+
+  import VueImageVerify from '@/components/VueImageVerify.vue';
+
+  import { login } from '@/api/user';
+  // ref<Nullable<HTMLElement>>(null)
+  const verifyRef = ref<any>(null);
   const loginForm = reactive({
     userName: '',
     password: '',
+    verify: '',
   });
 
   const onClickLeft = () => {
@@ -70,21 +110,24 @@
   };
 
   // 登录按钮
-  const login = () => {
-    console.log('login');
-    console.log(loginForm);
-
-    Toast.loading({
-      message: '加载中...',
-      forbidClick: true,
-      duration: 0,
+  const onSubmit = async (values: any) => {
+    console.log(verifyRef.value.state.imgCode);
+    if (
+      verifyRef.value.state.imgCode.toLowerCase() !==
+      loginForm.verify.toLowerCase()
+    ) {
+      Toast.fail('验证码错误');
+      return;
+    }
+    const { data } = await login({
+      loginName: values.userName,
+      passwordMd5: md5(values.password),
     });
 
-    loginApi().then((res) => {
-      console.log(res);
+    localStorage.setItem('token', data);
 
-      Toast.success('登录成功');
-    });
+    // 需要刷新页面，否则 axios.js 文件里的 token 不会被重置
+    window.location.href = '/';
   };
 
   // 校验规则
@@ -92,8 +135,6 @@
     phone: [{}],
     code: [],
   };
-
-  // toRefs(loginForm);
 </script>
 
 <style lang="less" scoped>
@@ -102,7 +143,8 @@
   }
 
   .img-wrap > img {
-    margin: 60px 50%;
-    transform: translateX(-50%);
+    margin: 60px 127.5px;
+    width: 120px;
+    height: 120px;
   }
 </style>

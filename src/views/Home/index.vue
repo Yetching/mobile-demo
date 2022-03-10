@@ -9,7 +9,7 @@
       <van-icon name="manager-o" @click="goAbout" />
     </div>
     <van-swipe class="swipe" :autoplay="2000">
-      <van-swipe-item v-for="item in images" :key="item.carouselUrl">
+      <van-swipe-item v-for="item in goods.carousels" :key="item.carouselUrl">
         <a :href="item.redirectUrl">
           <img :src="item.carouselUrl" />
         </a>
@@ -27,10 +27,40 @@
       <header class="good-header">新品上线</header>
       <van-skeleton title :row="3" :loading="loading">
         <div class="good-list">
-          <div class="good-item" v-for="item in 10" :key="item">
-            <img src="" alt="" />
-            <div class="good-describe"></div>
-            <div class="good-price"></div>
+          <div
+            class="good-item"
+            v-for="item in goods.newGoodses"
+            :key="item.goodsId"
+            @click="gotoDetail(item.goodsId)"
+          >
+            <img
+              class="good-img"
+              :src="item.goodsCoverImg"
+              :alt="item.goodsIntro"
+            />
+            <div class="good-describe">{{ item.goodsName }}</div>
+            <div class="good-price">￥{{ item.sellingPrice }}</div>
+          </div>
+        </div>
+      </van-skeleton>
+    </div>
+    <div class="goods">
+      <header class="good-header">热门商品</header>
+      <van-skeleton title :row="3" :loading="loading">
+        <div class="good-list">
+          <div
+            class="good-item"
+            v-for="item in goods.hotGoodses"
+            :key="item.goodsId"
+            @click="gotoDetail(item.goodsId)"
+          >
+            <img
+              class="good-img"
+              :src="item.goodsCoverImg"
+              :alt="item.goodsIntro"
+            />
+            <div class="good-describe">{{ item.goodsName }}</div>
+            <div class="good-price">￥{{ item.sellingPrice }}</div>
           </div>
         </div>
       </van-skeleton>
@@ -38,46 +68,35 @@
     <div class="goods">
       <header class="good-header">新品上线</header>
       <van-skeleton title :row="3" :loading="loading">
-        <div>实际内容</div>
-      </van-skeleton>
-    </div>
-    <div class="goods">
-      <header class="good-header">新品上线</header>
-      <van-skeleton title :row="3" :loading="loading">
-        <div>实际内容</div>
-      </van-skeleton>
-    </div>
-    <div class="goods">
-      <header class="good-header">新品上线</header>
-      <van-skeleton title :row="3" :loading="loading">
-        <div>实际内容</div>
+        <div class="good-list">
+          <div
+            class="good-item"
+            v-for="item in goods.recommendGoodses"
+            :key="item.goodsId"
+            @click="gotoDetail(item.goodsId)"
+          >
+            <img
+              class="good-img"
+              :src="item.goodsCoverImg"
+              :alt="item.goodsIntro"
+            />
+            <div class="good-describe">{{ item.goodsName }}</div>
+            <div class="good-price">￥{{ item.sellingPrice }}</div>
+          </div>
+        </div>
       </van-skeleton>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { computed, nextTick, reactive, ref } from 'vue';
+  import { computed, nextTick, onMounted, reactive, ref } from 'vue';
   import { useRouter } from 'vue-router';
 
-  // swiper轮播图
-  const images = [
-    {
-      carouselUrl:
-        'https://newbee-mall.oss-cn-beijing.aliyuncs.com/images/banner-p50-pocket.png',
-      redirectUrl: 'https://juejin.im/book/6844733826191589390',
-    },
-    {
-      carouselUrl:
-        'https://newbee-mall.oss-cn-beijing.aliyuncs.com/images/banner-iphone13.png',
-      redirectUrl: 'https://juejin.im/book/6844733826191589390',
-    },
-    {
-      carouselUrl:
-        'https://newbee-mall.oss-cn-beijing.aliyuncs.com/images/banner-mate40.png',
-      redirectUrl: 'https://juejin.im/book/6844733826191589390',
-    },
-  ];
+  import { getHome } from '@/api/home';
+  import { Toast } from 'vant';
+
+  const router = useRouter();
 
   // 模块菜单列表
   const menuList = [
@@ -143,9 +162,36 @@
   ];
 
   // 商品展示模块
-  const loading = computed(() => checked.value);
+  const loading = ref(true);
 
-  const checked = ref(true);
+  // 获取商品列表信息
+
+  const goods = reactive({
+    newGoodses: [] as any,
+    hotGoodses: [] as any,
+    recommendGoodses: [] as any,
+    carousels: [] as any,
+  });
+  onMounted(async () => {
+    Toast.loading({
+      message: '加载中...',
+      forbidClick: true,
+    });
+    const { data } = await getHome();
+    loading.value = false;
+    Toast.clear();
+    goods.newGoodses = data.newGoodses;
+    goods.hotGoodses = data.hotGoodses;
+    goods.carousels = data.carousels;
+    goods.recommendGoodses = data.recommendGoodses;
+  });
+
+  // 详情
+  const gotoDetail = (goodsId: any) => {
+    router.push({
+      path: `/product/${goodsId}`,
+    });
+  };
 
   // 滚动
 
@@ -166,7 +212,6 @@
   });
 
   // 点击事件
-  const router = useRouter();
   const goAbout = () => {
     router.push('/about');
   };
@@ -258,9 +303,25 @@
           box-sizing: border-box;
           padding: 10px;
           width: 50%;
-          border-bottom: 1px solid #00c8c8;
+          border-bottom: 1px solid #e9e9e9;
           &:nth-child(2n + 1) {
-            border-right: 1px solid #00c8c8;
+            border-right: 1px solid #e9e9e9;
+          }
+          font-size: 13px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          .good-img {
+            width: 120px;
+            height: 120px;
+          }
+          .good-describe {
+            color: #000;
+          }
+          .good-price {
+            margin-top: 5px;
+            color: #00c8c8;
           }
         }
       }
