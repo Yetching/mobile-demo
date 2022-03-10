@@ -3,7 +3,6 @@
  */
 
 import axios from 'axios';
-import { Toast } from 'vant';
 import router from '../router';
 
 const axiosInstance = axios.create({
@@ -17,6 +16,9 @@ const axiosInstance = axios.create({
     token: localStorage.getItem('token') as string,
   },
 });
+
+// todo 这种一次性设置token的方式，使用router.push()并不会重置token
+// todo 可以使用window.location.href刷新页面，我觉得需要改良
 
 axiosInstance.defaults.headers.post['Content-Type'] = 'application/json';
 

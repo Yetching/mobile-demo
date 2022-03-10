@@ -90,7 +90,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, nextTick, onMounted, reactive, ref } from 'vue';
+  import { nextTick, onMounted, reactive, ref } from 'vue';
   import { useRouter } from 'vue-router';
 
   import { getHome } from '@/api/home';

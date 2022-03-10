@@ -42,6 +42,12 @@ const routes: Array<RouteRecordRaw> = [
       },
     ],
   },
+  {
+    path: '/setting',
+    name: 'setting',
+    component: () =>
+      import(/* webpackChunkName: "setting" */ '@/views/About/setting.vue'),
+  },
 ];
 
 const router = createRouter({

@@ -1,6 +1,6 @@
 <template>
   <div class="about-container">
-    <van-nav-bar title="我的" left-text="返回" />
+    <van-nav-bar title="我的" />
     <van-skeleton title avatar :row="3" :loading="loading">
       <div class="info-wrap">
         <van-image

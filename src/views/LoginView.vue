@@ -79,6 +79,7 @@
   import VueImageVerify from '@/components/VueImageVerify.vue';
 
   import { login } from '@/api/user';
+  import { useRouter } from 'vue-router';
   // ref<Nullable<HTMLElement>>(null)
   const verifyRef = ref<any>(null);
   const loginForm = reactive({
@@ -87,9 +88,10 @@
     verify: '',
   });
 
+  const router = useRouter();
+
   const onClickLeft = () => {
-    history.back();
-    console.log('back to left');
+    router.push('/home');
   };
 
   const getAuthCode = () => {
