@@ -81,7 +81,10 @@
   import { login } from '@/api/user';
   import { useRouter } from 'vue-router';
   // ref<Nullable<HTMLElement>>(null)
-  const verifyRef = ref<any>(null);
+  // const verifyRef = ref<HTMLDivElement | null>();
+  const verifyRef = ref<any>();
+  // eg
+  console.log(verifyRef.value?.state.imgCode);
   const loginForm = reactive({
     userName: '',
     password: '',
@@ -113,7 +116,6 @@
 
   // 登录按钮
   const onSubmit = async (values: any) => {
-    console.log(verifyRef.value.state.imgCode);
     if (
       verifyRef.value.state.imgCode.toLowerCase() !==
       loginForm.verify.toLowerCase()

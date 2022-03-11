@@ -48,6 +48,34 @@ const routes: Array<RouteRecordRaw> = [
     component: () =>
       import(/* webpackChunkName: "setting" */ '@/views/About/setting.vue'),
   },
+  {
+    path: '/category',
+    name: 'category',
+    component: Layout,
+
+    children: [
+      {
+        path: '',
+        component: () =>
+          import(
+            /* webpackChunkName: "category" */ '@/views/Category/index.vue'
+          ),
+      },
+    ],
+  },
+  {
+    path: '/cart',
+    name: 'cart',
+    component: Layout,
+
+    children: [
+      {
+        path: '',
+        component: () =>
+          import(/* webpackChunkName: "cart" */ '@/views/Cart/index.vue'),
+      },
+    ],
+  },
 ];
 
 const router = createRouter({
